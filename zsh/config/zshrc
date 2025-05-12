@@ -1,0 +1,157 @@
+## ================= ##
+##    GENERAL SETUP  ##
+## ================= ##
+
+# Current User
+USERNAME=$(whoami)
+
+# Dell Server Details
+DellServerIP=""
+DellServerUser=""
+DellServerPass=""
+
+# VPS Details
+VPSIP=""
+VPSUser=""
+VPSKey=""
+VPSPort=""
+
+
+## ================= ##
+##     Oh My Zsh     ##
+## ================= ##
+
+# Check if Oh My Zsh is installed
+if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+  echo "Oh My Zsh not found. Installing..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --keep-zshrc" 
+fi
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+
+# Load Oh My Zsh plugins
+plugins=(git z history zsh-autosuggestions zsh-completions)
+
+# Initialize Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+## Autoload compinit for command and directory completion
+autoload -Uz compinit && compinit
+
+
+## Autosuggestions Configuration ##
+# Clone zsh-autosuggestions if not already installed
+if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]]; then
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
+
+# Highlight style for autosuggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+
+## zsh-completions ##
+# Clone zsh-completions if not already installed
+if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ]]; then
+  git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+fi
+
+# Add zsh-completions to fpath for better command completions
+fpath+=(${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions/src)
+
+## LANG ##
+export LANG=en_US.UTF-8
+
+## PROMPT ##
+
+# Custom prompt to override the theme's default
+PROMPT="%(?:%{$fg_bold[green]%}☽ :%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
+PROMPT+=' $(git_prompt_info)'
+
+
+## ================= ##
+##       PATH        ##
+## ================= ##
+
+# pnpm
+export PNPM_HOME="/home/$USERNAME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# Android
+export PATH="$PATH:/home/$USERNAME/Dev/platform-tools"
+
+# DotNet
+export PATH="$PATH:/home/$USERNAME/.dotnet"
+
+# Brew (Only for Apple Silicon)
+if [[ -d "/opt/homebrew/bin" ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+
+## ================= ##
+##      ALIASES      ##
+## ================= ##
+
+## Dell Server IPMI ##
+
+alias dell-fans-34="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x02 0xff 0x34"
+
+alias dell-fans-14="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x02 0xff 0x14"
+
+alias dell-fans-18="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x02 0xff 0x18"
+
+alias dell-fans-20="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x02 0xff 0x20"
+
+alias dell-fans-off="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x01 0x01"
+
+alias dell-fans-on="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass  raw 0x30 0x30 0x01 0x00"
+
+alias dell-fans-temp="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass sensor reading Temp"
+
+# Dj-Meneo
+
+alias dj-meneo="ssh $VPSUser@$VPSIP -p$VPSPort -i $VPSKey"
+
+# NVIDIA GPU
+
+# Check the status of the GPUs
+alias gpu-status='
+  echo "NVIDIA Dedicated Graphics" &&
+  lspci -nnk | grep -A 2 "10de:2704" | grep "Kernel driver in use" &&
+  echo "Intel Integrated Graphics" &&
+  lspci -nnk | grep -A 3 "8086:4680" | grep "Kernel driver in use" &&
+  echo "Confirm which GPU libraries are in use with (active-gpu and active-gpu-prime)" &&
+  echo "Enable and disable the dedicated NVIDIA GPU with nvidia-enable and nvidia-disable"
+'
+alias nvidia-status='
+watch -n 1 nvidia-smi
+'
+
+# Enable NVIDIA GPU on the host
+alias nvidia-enable='
+  sudo virsh nodedev-reattach pci_0000_01_00_0 &&
+  echo "NVIDIA GPU reattached (now host ready)" &&
+  sudo rmmod vfio_pci vfio_pci_core vfio_iommu_type1 &&
+  echo "VFIO drivers removed" &&
+  sudo modprobe -i nvidia_modeset nvidia_uvm nvidia &&
+  echo "NVIDIA drivers added" &&
+  echo "COMPLETED! (confirm success with gpu-status, and active-gpu-prime)"
+'
+
+# Disable NVIDIA GPU and prepare for passthrough
+alias nvidia-disable='
+  sudo rmmod nvidia_modeset nvidia_uvm nvidia &&
+  echo "NVIDIA drivers removed" &&
+  sudo modprobe -i vfio_pci vfio_pci_core vfio_iommu_type1 &&
+  echo "VFIO drivers added" &&
+  sudo virsh nodedev-detach pci_0000_01_00_0 &&
+  echo "NVIDIA GPU detached (now vfio ready)" &&
+  echo "COMPLETED! (confirm success with gpu-status and active-gpu)"
+'
+
+# Check which GPU is currently active for rendering
+
+alias active-gpu='glxinfo | grep vendor'
+alias active-gpu-prime='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxinfo | grep vendor'
