@@ -11,6 +11,7 @@ PACKAGES=(
     "zsh"
     "alacritty"
     "ghostty"
+    "fastfetch"
 )
 
 # Function to print a header
@@ -55,7 +56,7 @@ process_package() {
     local config_script="$SCRIPT_DIR/$package_name/setup.sh"
     if [[ -f "$config_script" ]]; then
         echo "Running configuration for $package_name..."
-        if bash "$config_script"; then
+        if SCRIPT_DIR="$SCRIPT_DIR" bash "$config_script"; then
             print_success "$package_name configuration completed!"
         else
             print_error "Failed to configure $package_name."

@@ -155,3 +155,5 @@ alias nvidia-disable='
 
 alias active-gpu='glxinfo | grep vendor'
 alias active-gpu-prime='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxinfo | grep vendor'
+
+fastfetch
