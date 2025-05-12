@@ -25,12 +25,12 @@ print_header() {
 
 # Function to print a success message
 print_success() {
-    echo -e "\e[32m[✔] $1\e[0m"
+    printf "\033[32m[✔] %s\033[0m\n" "$1"
 }
 
 # Function to print an error message
 print_error() {
-    echo -e "\e[31m[✘] $1\e[0m"
+    printf "\033[31m[✘] %s\033[0m\n" "$1"
 }
 
 # Function to handle the installation and configuration of a package
