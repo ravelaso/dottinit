@@ -13,6 +13,9 @@ else
     exit 1
 fi
 
+# Make sure directory exists
+mkdir -p "$CONFIG_DIR"
+
 # Copy the config file
 cp "$SCRIPT_DIR/ghostty/config" "$CONFIG_DIR/config"
 
