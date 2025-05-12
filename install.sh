@@ -3,20 +3,14 @@
 # Get the directory of the current script
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-# Source the Zsh and Alacritty function files
-source "$SCRIPT_DIR/zsh/zsh_install.sh"
-source "$SCRIPT_DIR/alacritty/alacritty_install.sh"
+# Source the generic install_package function
+source "$SCRIPT_DIR/install_package.sh"
 
-# Function registry (associative array for descriptions)
-declare -A FUNCTION_REGISTRY=(
-    ["install_zsh"]="Zsh installation"
-    ["install_alacritty"]="Alacritty installation"
-)
-
-# Ordered list of functions (indexed array for execution order)
-INSTALLATION_ORDER=(
-    "install_zsh"
-    "install_alacritty"
+# List of packages to install (in order)
+PACKAGES=(
+    "zsh"
+    "alacritty"
+    "ghostty"
 )
 
 # Function to print a header
@@ -38,19 +32,37 @@ print_error() {
     echo -e "\e[31m[✘] $1\e[0m"
 }
 
-# Function: run_installation_step
-# Arguments:
-#   $1 - The name of the installation step (e.g., "Zsh")
-#   $2 - The function to call for the installation (e.g., "install_zsh")
-run_installation_step() {
-    local step_name=$1
-    local install_function=$2
+# Function to handle the installation and configuration of a package
+process_package() {
+    local package_name=$1
 
-    echo "Installing $step_name..."
-    if $install_function; then
-        print_success "$step_name installation completed!"
+    # Prompt the user
+    read -p "Do you want to install $package_name? (y/n): " user_choice
+    if [[ "$user_choice" =~ ^[Nn]$ ]]; then
+        echo "Skipping $package_name."
+        return
+    fi
+
+    # Install the package
+    if install_package "$package_name"; then
+        print_success "$package_name installation completed!"
     else
-        print_error "$step_name installation failed!"
+        print_error "Failed to install $package_name."
+        return
+    fi
+
+    # Run the package's configuration script
+    local config_script="$SCRIPT_DIR/$package_name/setup.sh"
+    if [[ -f "$config_script" ]]; then
+        echo "Running configuration for $package_name..."
+        if bash "$config_script"; then
+            print_success "$package_name configuration completed!"
+        else
+            print_error "Failed to configure $package_name."
+            return 1  # Ensure the error propagates
+        fi
+    else
+        echo "No configuration script found for $package_name. Skipping configuration."
     fi
 }
 
@@ -58,19 +70,19 @@ run_installation_step() {
 clear
 print_header "Welcome to the Dotfiles Installer"
 echo "
-  ____        _   _   _       _ _   
- |  _ \  ___ | |_| |_(_)_ __ (_) |_ 
- | | | |/ _ \| __| __| | '_ \| | __|
- | |_| | (_) | |_| |_| | | | | | |_ 
- |____/ \___/ \__|\__|_|_| |_|_|\__|
+▗▄▄▄  ▗▄▖▗▄▄▄▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▄▖
+▐▌  █▐▌ ▐▌ █    █    █  ▐▛▚▖▐▌  █    █  
+▐▌  █▐▌ ▐▌ █    █    █  ▐▌ ▝▜▌  █    █  
+▐▙▄▄▀▝▚▄▞▘ █    █  ▗▄█▄▖▐▌  ▐▌▗▄█▄▖  █  
+                                       
 "
 echo "=========================================="
 echo ""
 
 # Display what will be installed
 print_header "Installation Summary"
-for func in "${INSTALLATION_ORDER[@]}"; do
-    echo "- ${FUNCTION_REGISTRY[$func]}"
+for package in "${PACKAGES[@]}"; do
+    echo "- $package"
 done
 echo ""
 echo "Press Enter to start the installation or Ctrl+C to cancel."
@@ -79,9 +91,9 @@ read -p ""
 # Start the installation process
 print_header "Starting Installation"
 
-# Run the installation steps in the specified order
-for func in "${INSTALLATION_ORDER[@]}"; do
-    run_installation_step "${FUNCTION_REGISTRY[$func]}" "$func"
+# Process each package in the list
+for package in "${PACKAGES[@]}"; do
+    process_package "$package"
 done
 
 # Final success message
