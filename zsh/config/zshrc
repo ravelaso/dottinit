@@ -72,6 +72,9 @@ PROMPT+=' $(git_prompt_info)'
 ##       PATH        ##
 ## ================= ##
 
+# flutter
+export PATH="$PATH:/home/$USERNAME/flutter/bin"
+
 # pnpm
 export PNPM_HOME="/home/$USERNAME/.local/share/pnpm"
 case ":$PATH:" in
