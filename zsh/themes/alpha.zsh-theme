@@ -15,9 +15,9 @@ time_segment() {
 # User segment (colored text based on privileges)
 user_segment() {
   if [[ $EUID -eq 0 ]]; then
-    echo "%F{red}%n@%m%{$RESET%}"
+    echo "%F{red}@%n%{$RESET%}"
   else
-    echo "%F{yellow}%n@%m%{$RESET%}"
+    echo "%F{yellow}@%n%{$RESET%}"
   fi
 }
 
