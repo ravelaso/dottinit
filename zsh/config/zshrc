@@ -16,9 +16,14 @@ VPSUser=""
 VPSKey=""
 VPSPort=""
 
+
 ## ================= ##
 ##     Oh My Zsh     ##
 ## ================= ##
+
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    export TERM=xterm-256color
+fi
 
 # Check if Oh My Zsh is installed
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
