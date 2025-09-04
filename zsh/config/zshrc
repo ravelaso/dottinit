@@ -64,7 +64,7 @@ export LANG=en_US.UTF-8
 ## PROMPT ##
 
 # Custom prompt to override the theme's default
-PROMPT="%(?:%{$fg_bold[green]%}☽ :%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
+PROMPT="%(?:%{$fg_bold[green]%}⍺:%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
 PROMPT+=' $(git_prompt_info)'
 
 
