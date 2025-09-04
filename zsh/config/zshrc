@@ -27,8 +27,19 @@ if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --keep-zshrc" 
 fi
 
+
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
+
+## ================= ##
+##   CUSTOM THEME    ##
+## ================= ##
+
+# Load custom Alpha theme
+if [[ -f ~/.config/zsh/alpha.zsh-theme ]]; then
+    source ~/.config/zsh/alpha.zsh-theme
+fi
+
+ZSH_THEME="alpha"
 
 # Load Oh My Zsh plugins
 plugins=(git z history zsh-autosuggestions zsh-completions)
@@ -62,17 +73,6 @@ fpath+=(${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions/src)
 export LANG=en_US.UTF-8
 
 ## PROMPT ##
-
-# Define user color based on UID
-if [[ $EUID -eq 0 ]]; then
-  USER_COLOR="%{$fg_bold[red]%}"
-else
-  USER_COLOR="%{$fg_bold[yellow]%}"
-fi
-
-# Build the prompt
-PROMPT="${USER_COLOR}%n%{$reset_color%} %(?:%{$fg_bold[green]%}⍺:%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
-PROMPT+=' $(git_prompt_info)'
 
 
 ## ================= ##
