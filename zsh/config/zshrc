@@ -16,7 +16,6 @@ VPSUser=""
 VPSKey=""
 VPSPort=""
 
-
 ## ================= ##
 ##     Oh My Zsh     ##
 ## ================= ##
@@ -27,29 +26,11 @@ if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --keep-zshrc" 
 fi
 
-
 export ZSH="$HOME/.oh-my-zsh"
-
-## ================= ##
-##   CUSTOM THEME    ##
-## ================= ##
-
-# Load custom Alpha theme
-if [[ -f ~/.config/zsh/alpha.zsh-theme ]]; then
-    source ~/.config/zsh/alpha.zsh-theme
-fi
-
-ZSH_THEME="alpha"
+ZSH_THEME=""  # Empty - we load our custom theme after Oh My Zsh
 
 # Load Oh My Zsh plugins
 plugins=(git z history zsh-autosuggestions zsh-completions)
-
-# Initialize Oh My Zsh
-source $ZSH/oh-my-zsh.sh
-
-## Autoload compinit for command and directory completion
-autoload -Uz compinit && compinit
-
 
 ## Autosuggestions Configuration ##
 # Clone zsh-autosuggestions if not already installed
@@ -72,7 +53,20 @@ fpath+=(${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions/src)
 ## LANG ##
 export LANG=en_US.UTF-8
 
-## PROMPT ##
+# Autoload compinit for command and directory completion
+autoload -Uz compinit && compinit
+
+# Initialize Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+## ================= ##
+##   CUSTOM THEME    ##
+## ================= ##
+
+# Load custom Alpha theme (after Oh My Zsh initialization)
+if [[ -f ~/.config/zsh/alpha.zsh-theme ]]; then
+    source ~/.config/zsh/alpha.zsh-theme
+fi
 
 
 ## ================= ##
