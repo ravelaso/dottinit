@@ -63,8 +63,15 @@ export LANG=en_US.UTF-8
 
 ## PROMPT ##
 
-# Custom prompt to override the theme's default
-PROMPT="%(?:%{$fg_bold[green]%}⍺:%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
+# Define user color based on UID
+if [[ $EUID -eq 0 ]]; then
+  USER_COLOR="%{$fg_bold[red]%}"
+else
+  USER_COLOR="%{$fg_bold[yellow]%}"
+fi
+
+# Build the prompt
+PROMPT="${USER_COLOR}%n%{$reset_color%} %(?:%{$fg_bold[green]%}⍺:%{$fg_bold[red]%}%1{➜%} ) %{$fg[cyan]%}%c%{$reset_color%}"
 PROMPT+=' $(git_prompt_info)'
 
 
