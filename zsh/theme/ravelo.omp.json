@@ -59,12 +59,16 @@
           "style": "powerline"
         },
         {
-          "template": "  admin ",
-          "foreground": "#EAEAEA",
+          "type":"session",
+          "style": "powerline",
           "powerline_symbol": "",
-          "background": "#009C97",
-          "type": "root",
-          "style": "powerline"
+          "template": " {{ .UserName }} ",
+          "foreground_templates": [
+            "{{ if eq .UserName \"root\" }}#2A2A2A{{ else }}#EAEAEA{{ end }}"
+          ],
+          "background_templates": [
+            "{{ if eq .UserName \"root\" }}#009C97{{ else }}#2A2A2A{{ end }}"
+          ]
         },
         {
           "template": "   cmake {{ .Full }} ",
