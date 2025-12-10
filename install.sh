@@ -12,6 +12,7 @@ PACKAGES=(
     "alacritty"
     "ghostty"
     "fastfetch"
+    "git"
 )
 
 # Function to print a header
