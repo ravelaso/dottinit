@@ -105,6 +105,11 @@ fi
 ##      ALIASES      ##
 ## ================= ##
 
+# CLEAN GIT
+cleangit() {
+    git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d
+}
+
 ## Dell Server IPMI ##
 
 alias dell-fans-34="ipmitool -I lanplus -H $DellServerIP -U $DellServerUser -P $DellServerPass raw 0x30 0x30 0x02 0xff 0x34"
