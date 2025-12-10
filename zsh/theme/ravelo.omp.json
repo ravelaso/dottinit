@@ -1,0 +1,279 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "secondary_prompt": {
+    "template": "╰─❯ ",
+    "foreground": "#EAEAEA",
+    "background": "transparent"
+  },
+  "transient_prompt": {
+    "template": " ",
+    "foreground": "#F5F5F5",
+    "background": "transparent"
+  },
+  "upgrade": {
+    "source": "cdn",
+    "interval": "168h",
+    "auto": false,
+    "notice": false
+  },
+  "console_title_template": "{{ if .Root }}root @ {{ end }}{{ .Shell }} in {{ .Folder }}",
+  "blocks": [
+    /* ------------------------------------------------------------------
+       FIRST PROMPT BLOCK (LEFT) — branch only
+    ------------------------------------------------------------------ */
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "alpine": "",
+            "arch": "",
+            "centos": "",
+            "debian": "",
+            "elementary": "",
+            "fedora": "",
+            "gentoo": "",
+            "linux": "",
+            "macos": "",
+            "manjaro": "",
+            "mint": "",
+            "opensuse": "",
+            "raspbian": "",
+            "ubuntu": "",
+            "windows": ""
+          },
+          "leading_diamond": "",
+          "template": " {{ if .WSL }} on {{ end }}{{ .Icon }} ",
+          "foreground": "#EAEAEA",
+          "background": "#2A2A2A",
+          "type": "os",
+          "style": "diamond"
+        },
+        {
+          "template": "  {{ .Name }} ",
+          "foreground": "#2E2E2E",
+          "powerline_symbol": "",
+          "background": "#AAB8C2",
+          "type": "shell",
+          "style": "powerline"
+        },
+        {
+          "template": "  admin ",
+          "foreground": "#EAEAEA",
+          "powerline_symbol": "",
+          "background": "#009C97",
+          "type": "root",
+          "style": "powerline"
+        },
+        {
+          "template": "   cmake {{ .Full }} ",
+          "foreground": "#F5F5F5",
+          "powerline_symbol": "",
+          "background": "#AAB8C2",
+          "type": "cmake",
+          "style": "powerline"
+        },
+        {
+          "type": "python",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "template": " {{ if contains .Venv \"base\" }}\uE235 {{ else }} \u1F6E {{ end }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }} ",
+          "foreground_templates": [
+            "{{ if contains .Venv \"base\" }}#ffffff{{ else }}#000000{{ end }}"
+          ],
+          "background_templates": [
+            "{{ if contains .Venv \"base\" }}#2E2E2E{{ else }}#AAB8C2{{ end }}"
+          ],
+          "properties": {
+            "display_mode": "context",
+            "fetch_virtual_env": true
+          }
+        },
+        {
+          "template": " 󰟓 {{ .Full }} ",
+          "foreground": "#F5F5F5",
+          "powerline_symbol": "",
+          "background": "#AAB8C2",
+          "type": "go",
+          "style": "powerline"
+        },
+        {
+          "template": "  {{ .Full }} ",
+          "foreground": "#F5F5F5",
+          "powerline_symbol": "",
+          "background": "#AAB8C2",
+          "type": "rust",
+          "style": "powerline"
+        },
+        /* ------------ GIT BLOCK #1 (branch only) ------------ */
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#2E2E2E",
+          "background": "#AAB8C2",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#16B1AC{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}",
+            "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
+          ],
+          "properties": {
+            "branch_icon": " ",
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          },
+          "template": "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}"
+        }
+      ]
+    },
+    /* ------------------------------------------------------------------
+       SECOND PROMPT BLOCK — git changes (MUST BE SEPARATE)
+    ------------------------------------------------------------------ */
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#2E2E2E",
+          "foreground": "#AAB8C2",
+          "properties": {
+            "display_mode": "status",
+            "fetch_status": true
+          },
+          "template": "{{ if .Working.Changed }} \u270E {{ .Working.String }} {{ end }}{{ if .Staging.Changed }} \u2714 {{ .Staging.String }} {{ end }}",
+          "condition": "or (.Working.Changed) (.Staging.Changed)"
+        }
+      ]
+    },
+    /* ------------------------------------------------------------------
+       RIGHT SIDE BLOCK (unchanged)
+    ------------------------------------------------------------------ */
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "properties": {
+            "always_enabled": true
+          },
+          "leading_diamond": "",
+          "template": " {{ if gt .Code 0 }}{{ else }}{{ end }} ",
+          "foreground": "#414141",
+          "background": "#AAB8C2",
+          "type": "status",
+          "style": "diamond",
+          "foreground_templates": [
+            "{{ if gt .Code 0 }}#EAEAEA{{ end }}"
+          ],
+          "background_templates": [
+            "{{ if gt .Code 0 }}#E44141{{ end }}"
+          ]
+        },
+        {
+          "properties": {
+            "style": "roundrock",
+            "threshold": 0
+          },
+          "trailing_diamond": "",
+          "template": "  {{ .FormattedMs }} ",
+          "foreground": "#EAEAEA",
+          "background": "#2A2A2A",
+          "type": "executiontime",
+          "style": "diamond"
+        },
+        {
+          "properties": {
+            "style": "roundrock",
+            "threshold": 0
+          },
+          "trailing_diamond": "",
+          "foreground": "#000000",
+          "background": "#AAB8C2",
+          "type": "sysinfo",
+          "style": "diamond",
+          "template": "<#000000> \ue266 </>"
+        },
+        {
+          "properties": {
+            "style": "roundrock",
+            "threshold": 0
+          },
+          "foreground": "#EAEAEA",
+          "background": "#2A2A2A",
+          "type": "sysinfo",
+          "style": "diamond",
+          "template": " <#EAEAEA> {{ (div ((sub .PhysicalTotalMemory .PhysicalAvailableMemory)|float64) 1073741824.0) }}/{{ (div .PhysicalTotalMemory 1073741824.0) }}GB </>"
+        }
+      ]
+    },
+    /* ------------------------------------------------------------------
+       PATH + TIME BLOCK
+    ------------------------------------------------------------------ */
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "template": "╭─",
+          "foreground": "#EAEAEA",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "time_format": "<#EAEAEA> 15:04:05</> <#79DFE1>"
+          },
+          "template": "{{ .CurrentDate | date .Format }} <#79DFE1>",
+          "foreground": "#F5F5F5",
+          "type": "time",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "folder_icon": "\uf07c",
+            "folder_separator_icon": "/",
+            "home_icon": "\ueb06 ",
+            "max_depth": 3,
+            "style": "agnoster_short"
+          },
+          "leading_diamond": "<#AAB8C2> \uf07b </><#B6D6F2> \uf061 </>",
+          "template": " {{ .Path }} ",
+          "foreground": "#B6D6F2",
+          "type": "path",
+          "style": "diamond"
+        }
+      ],
+      "newline": true
+    },
+    /* ------------------------------------------------------------------
+       FINAL PROMPT BLOCK (unchanged)
+    ------------------------------------------------------------------ */
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "template": "╰─",
+          "foreground": "#EAEAEA",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "always_enabled": true
+          },
+          "template": "❯\u266A\u266B ",
+          "foreground": "#EAEAEA",
+          "type": "status",
+          "style": "plain"
+        }
+      ],
+      "newline": true
+    }
+  ],
+  "version": 3
+}
