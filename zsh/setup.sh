@@ -16,15 +16,15 @@ else
 fi
 
 # Create .config/zsh directory for themes
-mkdir -p ~/.config/zsh
-sudo mkdir -p "$ROOT_HOME/.config/zsh"
+#mkdir -p ~/.config/zsh
+#sudo mkdir -p "$ROOT_HOME/.config/zsh"
 
 # Copy zshrc files
 cp "$SCRIPT_DIR/zsh/config/zshrc" ~/.zshrc
 sudo cp "$SCRIPT_DIR/zsh/config/zshrc" "$ROOT_HOME/.zshrc"
 
-# Copy custom alpha theme to .config/zsh
-cp "$SCRIPT_DIR/zsh/themes/alpha.zsh-theme" ~/.config/zsh/
-sudo cp "$SCRIPT_DIR/zsh/themes/alpha.zsh-theme" "$ROOT_HOME/.config/zsh/"
+# Copy custom theme to oh-my-posh
+cp "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" ~/.cache/oh-my-posh/themes/ravelo.omp.json
+sudo cp "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" "$ROOT_HOME/.cache/oh-my-posh/themes/ravelo.omp.json"
 
 echo "Zsh configuration completed!"
