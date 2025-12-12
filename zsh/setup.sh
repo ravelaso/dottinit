@@ -20,11 +20,14 @@ fi
 #sudo mkdir -p "$ROOT_HOME/.config/zsh"
 
 # Copy zshrc files
-cp "$SCRIPT_DIR/zsh/config/zshrc" ~/.zshrc
+cp -f "$SCRIPT_DIR/zsh/config/zshrc" ~/.zshrc
 sudo cp "$SCRIPT_DIR/zsh/config/zshrc" "$ROOT_HOME/.zshrc"
 
 # Copy custom theme to oh-my-posh
-cp "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" ~/.cache/oh-my-posh/themes/ravelo.omp.json
-sudo cp "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" "$ROOT_HOME/.cache/oh-my-posh/themes/ravelo.omp.json"
+mkdir -p ~/.cache/oh-my-posh/themes
+sudo mkdir -p "$ROOT_HOME/.cache/oh-my-posh/themes"
+
+cp -f "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" ~/.cache/oh-my-posh/themes/ravelo.omp.json
+sudo cp -f "$SCRIPT_DIR/zsh/theme/ravelo.omp.json" "$ROOT_HOME/.cache/oh-my-posh/themes/ravelo.omp.json"
 
 echo "Zsh configuration completed!"
