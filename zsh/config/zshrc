@@ -107,7 +107,22 @@ fi
 
 # CLEAN GIT
 cleangit() {
-    git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d
+    branches=$(git branch -vv | grep 'gone' | awk '{print $1}')
+    if [ -z "$branches" ]; then
+        echo "No stale branches found."
+        return 0
+    fi
+    
+    echo "Branches to delete:"
+    echo "$branches"
+    echo
+    read -p "Confirm deletion? [y/N] " confirm
+    if [[ $confirm =~ ^[Yy]$ ]]; then
+        echo "$branches" | while read branch; do
+            git branch -D "$branch"
+        done
+        echo "Done!"
+    fi
 }
 
 ## Dell Server IPMI ##
